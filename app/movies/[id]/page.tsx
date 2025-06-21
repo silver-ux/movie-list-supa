@@ -35,7 +35,7 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
         height={1080}
         alt={movie.title}
         priority
-        className="rounded"
+        className="rounded object-cover"
       />
       <div className="mt-5 p-5 md:p-10 bg-gray-50">
         <div className="md:w-[80%] mx-auto">
