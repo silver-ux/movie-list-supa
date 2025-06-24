@@ -52,11 +52,16 @@ const Page = () => {
             </p>
             <p className=" text-2xl">{stars[item.stars - 1]}</p>
 
-            {modalImage && (
-              <div>
+            {modalImage === item.image_url && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+              >
                 <div className="w-full h-[150px] rounded mt-10 mb-3 sm:mt-5 relative">
                   <Image
-                    src={modalImage}
+                    src={item.image_url}
                     fill
                     alt="picture"
                     sizes="(max-width:768px) 100vw, 33vw"
@@ -70,7 +75,7 @@ const Page = () => {
                 >
                   詳細情報
                 </Link>
-              </div>
+              </motion.div>
             )}
           </motion.div>
         ))}
