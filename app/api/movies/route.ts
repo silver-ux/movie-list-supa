@@ -33,7 +33,7 @@ export async function GET() {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("movies")
-    .select("created_at, id, image_url, title, stars, name")
+    .select("created_at, id, image_url, title, stars, name, genre")
     .order("created_at", { ascending: false });
 
   if (error)

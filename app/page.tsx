@@ -12,6 +12,7 @@ type MovieData = {
   stars: number;
   title: string;
   name: string;
+  genre: string[];
 };
 
 const Page = () => {
@@ -47,26 +48,36 @@ const Page = () => {
     <>
       <Header />
       <div className="max-w-[1300px] w-full mx-auto px-[5%] grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[1fr]">
-        {data.map((item, index) => (
-          <motion.div
-            animate={{
-              y: [80, 0],
-              opacity: [0, 1],
-              transition: { duration: 1.7, delay: index * 0.1 },
-            }}
-            key={item.id}
-            onClick={() => toggleModal(item)}
-            className="bg-gray-100 p-5 opacity-0 rounded hover:bg-gray-200 cursor-pointer"
-          >
-            <h1 className="font-bold h-[3em] overflow-hidden text-ellipsis leading-tight">
-              {item.title}
-            </h1>
-            <p>
-              <small>投稿日：{item.created_at.slice(0, 10)}</small>
-            </p>
-            <p className=" text-2xl">{stars[item.stars - 1]}</p>
-          </motion.div>
-        ))}
+        {data.map((item, index) =>
+          loading ? null : (
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.2 }}
+              key={item.id}
+              onClick={() => toggleModal(item)}
+              className="bg-gray-100 p-5 rounded hover:bg-gray-200 duration-500 cursor-pointer"
+            >
+              <h1 className="font-bold h-[4em] overflow-hidden text-ellipsis leading-tight">
+                {item.title}
+              </h1>
+              <Image
+                src={item.image_url}
+                width={1920}
+                height={1080}
+                alt="picture"
+                className="object-cover rounded mb-2 md:mb-4 w-full h-[100px] md:h-[150px]"
+              />
+              <p>
+                <small>{item.genre.join(" / ")}</small>
+              </p>
+              <p>
+                <small>投稿日：{item.created_at.slice(0, 10)}</small>
+              </p>
+              <p className=" text-2xl">{stars[item.stars - 1]}</p>
+            </motion.div>
+          )
+        )}
 
         <AnimatePresence>
           {modalItem && (
@@ -95,6 +106,9 @@ const Page = () => {
                   className="object-cover rounded mb-4 w-full h-auto"
                 />
                 <p className="text-xl font-bold">{modalItem.title}</p>
+                <p className="underline underline-offset-2">
+                  {modalItem.genre.join(" / ")}
+                </p>
                 <p>
                   <small>投稿者：{modalItem.name}</small>
                 </p>

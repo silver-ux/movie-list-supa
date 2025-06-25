@@ -12,6 +12,7 @@ const Page = () => {
     comment: string;
     stars: string;
     image_url: string;
+    genre: string[];
   };
   const [form, setForm] = useState<Data>({
     title: "",
@@ -20,6 +21,7 @@ const Page = () => {
     comment: "",
     stars: "3",
     image_url: "",
+    genre: [],
   });
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -27,20 +29,64 @@ const Page = () => {
 
   const router = useRouter();
 
+  const genres = [
+    "アクション",
+    "コメディ",
+    "歴史",
+    "戦争",
+    "恋愛",
+    "アニメ",
+    "ドラマ",
+    "犯罪",
+    "ミュージカル",
+    "ミステリー",
+    "日本",
+    "SF",
+    "アドベンチャー",
+    "サスペンス",
+    "ホラー",
+    "ファンタジー",
+  ];
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
     const { name, value } = e.target as HTMLInputElement;
+
     setForm({
       ...form,
       [name]: value,
     });
+    console.log(form);
   };
   // useEffect(() => {
-  //   console.log(form);
+  //   console.log(form.genre);
   // }, [form]);
+
+  const handleCheckBox = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, checked } = e.target;
+    if (name === "genre") {
+      setForm((prev) => {
+        const genreList = prev.genre as string[];
+
+        if (checked) {
+          // チェックされた → 配列に追加（重複防止）
+          return {
+            ...prev,
+            genre: [...genreList, value],
+          };
+        } else {
+          // チェック外された → 配列から削除
+          return {
+            ...prev,
+            genre: genreList.filter((item) => item !== value),
+          };
+        }
+      });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,6 +112,7 @@ const Page = () => {
       comment: "",
       stars: "3",
       image_url: "",
+      genre: [],
     });
     if (inputFileRef.current) {
       inputFileRef.current.value = "";
@@ -95,6 +142,20 @@ const Page = () => {
           required
           onChange={handleChange}
         />
+        <div className="grid grid-cols-2 md:grid-cols-3">
+          {genres.map((g, index) => (
+            <label key={index} className="blcok">
+              <input
+                type="checkbox"
+                name="genre"
+                value={g}
+                onChange={handleCheckBox}
+              />
+              {g}
+            </label>
+          ))}
+        </div>
+
         <textarea
           className="border p-2 w-full rounded min-h-[120px]"
           placeholder="本文（省略可）"
