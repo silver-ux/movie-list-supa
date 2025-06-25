@@ -2,6 +2,7 @@
 import { storageUpload } from "@/supabase/storageUpload";
 import React, { useRef, useState } from "react";
 import Header from "../components/Header";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
   type Data = {
@@ -23,6 +24,8 @@ const Page = () => {
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const inputFileRef = useRef<HTMLInputElement | null>(null);
+
+  const router = useRouter();
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -68,6 +71,7 @@ const Page = () => {
       inputFileRef.current.value = "";
     }
     setImage(null);
+    router.push("/");
   };
   return (
     <>
