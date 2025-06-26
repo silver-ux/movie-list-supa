@@ -1,10 +1,10 @@
 "use server";
-import { createClient } from "./server";
+import { supaClient } from "./server";
 
 export const storageUpload = async (image: File | null): Promise<string> => {
   if (!image) throw new Error("画像を選択してください");
 
-  const supabase = await createClient();
+  const supabase = await supaClient();
 
   const filePath = `images/${Date.now()}_${image.name}`;
 

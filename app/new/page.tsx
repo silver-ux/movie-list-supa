@@ -1,8 +1,8 @@
 "use client";
 import { storageUpload } from "@/supabase/storageUpload";
 import React, { useRef, useState } from "react";
-import Header from "../components/Header";
 import { useRouter } from "next/navigation";
+import { motion } from "motion/react";
 
 const Page = () => {
   type Data = {
@@ -121,8 +121,13 @@ const Page = () => {
     router.push("/");
   };
   return (
-    <>
-      <Header />
+    <motion.div
+      key="new-page"
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.4 }}
+    >
       <form onSubmit={handleSubmit} className="max-w-xl mx-auto p-6 space-y-4">
         <input
           className="border p-2 w-full rounded"
@@ -205,7 +210,7 @@ const Page = () => {
           {loading ? "送信中…" : "投稿"}
         </button>
       </form>
-    </>
+    </motion.div>
   );
 };
 

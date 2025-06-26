@@ -1,22 +1,9 @@
 "use client";
-import { AnimatePresence, motion } from "motion/react";
-import { usePathname } from "next/navigation";
+import { AnimatePresence } from "motion/react";
 import React from "react";
 
 const ClientWrapper = ({ children }: { children: React.ReactNode }) => {
-  const pathname = usePathname();
-  return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={pathname}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
-  );
+  return <AnimatePresence mode="wait">{children}</AnimatePresence>;
 };
 
 export default ClientWrapper;

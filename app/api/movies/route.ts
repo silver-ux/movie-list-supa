@@ -1,10 +1,11 @@
-import { createClient } from "@/supabase/server";
+import { supaClient } from "@/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const supabase = await createClient();
+  const supabase = await supaClient();
 
-  const { title, desc, name, comment, stars, image_url } = await req.json();
+  const { title, desc, name, comment, stars, image_url, genre } =
+    await req.json();
   // const all = await req.json();
 
   if (!title)
@@ -19,6 +20,7 @@ export async function POST(req: NextRequest) {
       comment,
       stars,
       image_url,
+      genre,
     })
     .select()
     .single();
@@ -30,7 +32,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET() {
-  const supabase = await createClient();
+  const supabase = await supaClient();
   const { data, error } = await supabase
     .from("movies")
     .select("created_at, id, image_url, title, stars, name, genre")

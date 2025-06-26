@@ -3,7 +3,6 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import Header from "./components/Header";
 
 type MovieData = {
   created_at: string;
@@ -19,6 +18,7 @@ const Page = () => {
   const [data, setData] = useState<MovieData[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalItem, setModalItem] = useState<MovieData | null>(null);
+  const [query, setQuery] = useState("");
 
   const toggleModal = (item: MovieData) => {
     setModalItem((prev) => (prev?.id === item.id ? null : item));
@@ -28,6 +28,7 @@ const Page = () => {
     const fetchData = async () => {
       const response = await fetch("/api/movies");
       const json = (await response.json()) as MovieData[];
+
       setData(json);
       setLoading(false);
     };
@@ -44,40 +45,54 @@ const Page = () => {
 
   const stars = ["★", "★★", "★★★", "★★★★", "★★★★★"];
 
+  const filtered = data.filter((post) =>
+    post.title.toLowerCase().includes(query.toLowerCase())
+  );
+
   return (
     <>
-      <Header />
-      <div className="max-w-[1300px] w-full mx-auto px-[5%] grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[1fr]">
-        {data.map((item, index) =>
-          loading ? null : (
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.2 }}
-              key={item.id}
-              onClick={() => toggleModal(item)}
-              className="bg-gray-100 p-5 rounded hover:bg-gray-200 duration-500 cursor-pointer"
-            >
-              <h1 className="font-bold h-[4em] overflow-hidden text-ellipsis leading-tight">
-                {item.title}
-              </h1>
-              <Image
-                src={item.image_url}
-                width={1920}
-                height={1080}
-                alt="picture"
-                className="object-cover rounded mb-2 md:mb-4 w-full h-[100px] md:h-[150px]"
-              />
-              <p>
-                <small>{item.genre.join(" / ")}</small>
-              </p>
-              <p>
-                <small>投稿日：{item.created_at.slice(0, 10)}</small>
-              </p>
-              <p className=" text-2xl">{stars[item.stars - 1]}</p>
-            </motion.div>
-          )
-        )}
+      <input
+        type="text"
+        className="border block mx-auto py-2 px-3 mb-4 w-[90%] md:w-1/2 "
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="タイトルを検索"
+      />
+
+      <div className="max-w-[1300px] w-full mx-auto px-[5%] grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[1fr]">
+        {filtered.map((item, index) => (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{
+              duration: 1,
+              delay: index * 0.2,
+              ease: "easeInOut",
+            }}
+            key={item.id}
+            onClick={() => toggleModal(item)}
+            className="bg-gray-100 p-5 origin-center rounded hover:bg-gray-200 duration-500 cursor-pointer"
+          >
+            <h1 className="font-bold h-[4em] overflow-hidden text-ellipsis leading-tight">
+              {item.title}
+            </h1>
+            <Image
+              src={item.image_url}
+              width={1920}
+              height={1080}
+              alt="picture"
+              priority
+              className="object-cover rounded mb-2 md:mb-4 w-full h-[140px] md:h-[160px]"
+            />
+            <p>
+              <small>{item.genre?.join(" / ")}</small>
+            </p>
+            <p>
+              <small>投稿日：{item.created_at.slice(0, 10)}</small>
+            </p>
+            <p className=" text-2xl">{stars[item.stars - 1]}</p>
+          </motion.div>
+        ))}
 
         <AnimatePresence>
           {modalItem && (
@@ -95,19 +110,21 @@ const Page = () => {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="bg-white p-6 rounded shadow-lg max-w-[90%] max-h-[90%] overflow-auto"
+                className="bg-white p-6 rounded shadow-lg min-w-[60%] max-w-[90%] max-h-[90%] overflow-auto"
                 onClick={(e) => e.stopPropagation()}
               >
-                <Image
-                  src={modalItem.image_url}
-                  width={600}
-                  height={400}
-                  alt="picture"
-                  className="object-cover rounded mb-4 w-full h-auto"
-                />
+                <div className="bg-black rounded">
+                  <Image
+                    src={modalItem.image_url}
+                    width={1920}
+                    height={1080}
+                    alt="picture"
+                    className="object-contain rounded mb-4 w-full h-[270px] "
+                  />
+                </div>
                 <p className="text-xl font-bold">{modalItem.title}</p>
                 <p className="underline underline-offset-2">
-                  {modalItem.genre.join(" / ")}
+                  {modalItem.genre?.join(" / ")}
                 </p>
                 <p>
                   <small>投稿者：{modalItem.name}</small>

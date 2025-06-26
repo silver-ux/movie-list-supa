@@ -1,4 +1,4 @@
-import { createClient } from "@/supabase/server";
+import { supaClient } from "@/supabase/server";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -6,7 +6,7 @@ import React from "react";
 
 const page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
-  const supabase = await createClient();
+  const supabase = await supaClient();
 
   const { data: movie, error } = await supabase
     .from("movies")
@@ -40,13 +40,13 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
       <div className="mt-5 p-5 md:p-10 bg-gray-50">
         <div className="md:w-[80%] mx-auto">
           <h2 className="font-bold text-2xl md:text-3xl">STORY</h2>
-          <p className="mt-4 text-justify md:text-[20px]">{movie.desc}</p>
+          <p className="mt-4 text-justify md:text-[16px]">{movie.desc}</p>
         </div>
       </div>
       <div className="mt-5 p-5 md:p-10 mb-5 bg-gray-50">
         <div className="md:w-[80%] mx-auto">
           <h2 className="font-bold text-2xl md:text-3xl">COMMENT</h2>
-          <p className="mt-4 text-justify md:text-[20px]">{movie.comment}</p>
+          <p className="mt-4 text-justify md:text-[16px]">{movie.comment}</p>
         </div>
       </div>
 
