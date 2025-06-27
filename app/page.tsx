@@ -3,6 +3,8 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { getUser } from "@/supabase/user";
+import Header from "./components/Header";
 
 type MovieData = {
   created_at: string;
@@ -29,6 +31,12 @@ const Page = () => {
       const response = await fetch("/api/movies");
       const json = (await response.json()) as MovieData[];
 
+      const user = await getUser();
+
+      if ("error" in user) {
+        console.error("認証エラー:", user.error);
+      }
+
       setData(json);
       setLoading(false);
     };
@@ -51,6 +59,7 @@ const Page = () => {
 
   return (
     <>
+      <Header data={data} />
       <input
         type="text"
         className="border block mx-auto py-2 px-3 mb-4 w-[90%] md:w-1/2 "
@@ -59,7 +68,7 @@ const Page = () => {
         placeholder="タイトルを検索"
       />
 
-      <div className="max-w-[1300px] w-full mx-auto px-[5%] grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[1fr]">
+      <div className="max-w-[1300px] w-full mx-auto px-[5%] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[1fr]">
         {filtered.map((item, index) => (
           <motion.div
             initial={{ opacity: 0 }}
@@ -110,7 +119,7 @@ const Page = () => {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="bg-white p-6 rounded shadow-lg min-w-[60%] max-w-[90%] max-h-[90%] overflow-auto"
+                className="bg-white p-6 rounded shadow-lg min-w-[60%] md:min-w-[685px] max-w-[90%] md:max-w-[ max-h-[90%] overflow-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="bg-black rounded">

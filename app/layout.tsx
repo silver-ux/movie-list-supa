@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
-import Header from "./components/Header";
 import ClientWrapper from "./components/ClientWrapper";
 // import ClientWrapper from "./components/ClientWrapper";
 
@@ -23,7 +22,6 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={noto.className}>
-        <Header />
         <ClientWrapper>{children}</ClientWrapper>
       </body>
     </html>

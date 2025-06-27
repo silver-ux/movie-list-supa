@@ -6,7 +6,6 @@ export async function POST(req: NextRequest) {
 
   const { title, desc, name, comment, stars, image_url, genre } =
     await req.json();
-  // const all = await req.json();
 
   if (!title)
     return NextResponse.json({ error: "titleは必須です" }, { status: 400 });
@@ -33,9 +32,11 @@ export async function POST(req: NextRequest) {
 
 export async function GET() {
   const supabase = await supaClient();
+
   const { data, error } = await supabase
     .from("movies")
     .select("created_at, id, image_url, title, stars, name, genre")
+    // .eq("user_id", user)
     .order("created_at", { ascending: false });
 
   if (error)
