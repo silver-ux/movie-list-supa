@@ -13,13 +13,13 @@ const SideModal = ({ unique }: Props) => {
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -50 }}
       transition={{ duration: 0.4 }}
-      className="sm:w-[30%] w-[50%] h-screen bg-gray-100 fixed top-0 z-10"
+      className="sm:w-[30%] w-[50%] h-screen bg-gray-100 absolute top-0 z-5"
     >
-      <ul className=" flex flex-col items-center mt-[150px]">
+      <ul className=" flex flex-col items-center mt-[150px] h-full">
         {unique.map((item, index) => (
           <li
             key={index}
-            className="underline underline-offset-2 text-left w-[60%] my-2 "
+            className="border-b text-left w-[60%] my-2 cursor-pointer hover:bg-gray-200 py-3 "
           >
             {item}
           </li>

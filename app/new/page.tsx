@@ -3,6 +3,7 @@ import { storageUpload } from "@/supabase/storageUpload";
 import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
+import Link from "next/link";
 
 const Page = () => {
   type Data = {
@@ -128,6 +129,12 @@ const Page = () => {
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.4 }}
     >
+      <Link
+        href={"/"}
+        className="block text-center bg-red-100 py-8 hover:bg-red-300 duration-500 font-bold text-2xl"
+      >
+        一覧に戻る
+      </Link>
       <form onSubmit={handleSubmit} className="max-w-xl mx-auto p-6 space-y-4">
         <input
           className="border p-2 w-full rounded"
