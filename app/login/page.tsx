@@ -5,6 +5,7 @@ import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { validationSchema } from "../utils/validationSchema";
 import { motion } from "motion/react";
+import { useRouter } from "next/navigation";
 
 interface IFormInput {
   email: string;
@@ -12,6 +13,7 @@ interface IFormInput {
 }
 
 const LoginPage = () => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -21,8 +23,20 @@ const LoginPage = () => {
     resolver: zodResolver(validationSchema),
   });
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) alert("投稿失敗");
+    const response = await res.json();
+    alert(response.message);
+
+    router.push("/");
   };
   return (
     <motion.div
@@ -34,6 +48,8 @@ const LoginPage = () => {
       <div className="bg-gray-100 rounded-2xl w-full max-w-[700px] h-[600px] ">
         <form
           onSubmit={handleSubmit(onSubmit)}
+          action="#"
+          noValidate
           className="p-4 sm:p-15 w-full h-full"
         >
           <h2 className="mt-10 mb-7 font-bold text-2xl text-center">LOGIN</h2>

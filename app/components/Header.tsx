@@ -1,9 +1,12 @@
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SideModal from "./SideModal";
 import { AnimatePresence } from "motion/react";
 import { useScrollLock } from "./ScrollLock";
+import { getUser } from "@/supabase/user";
+import { User } from "@supabase/supabase-js";
+import { signout } from "@/supabase/signout";
 
 type MovieData = {
   created_at: string;
@@ -16,20 +19,41 @@ type MovieData = {
 };
 
 type Props = {
-  data: MovieData[];
+  data: MovieData[] | null;
+  setData: React.Dispatch<React.SetStateAction<MovieData[] | null>>;
 };
 
-const Header = ({ data }: Props) => {
+const Header = ({ data, setData }: Props) => {
   const [hamburger, setHamburger] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   useScrollLock(hamburger);
 
-  const genres = data.map((item) => item.genre);
-  const flat = genres.flat();
+  const genres = data?.map((item) => item.genre);
+  const flat = genres?.flat();
   const unique = [...new Set(flat)];
 
+  useEffect(() => {
+    const func = async () => {
+      const { user, error } = await getUser();
+      if (user) {
+        setCurrentUser(user);
+      } else {
+        console.error(error);
+      }
+    };
+    func();
+  }, [currentUser]);
+
+  const logout = async () => {
+    await signout();
+    setCurrentUser(null);
+    const response = await fetch("/api/movies");
+    const json = (await response.json()) as MovieData[];
+    setData(json);
+  };
   return (
     <>
-      <header className="h-[90px] max-w-[1300px] w-full mx-auto px-[5%] font-bold mt-7 sm:mt-10 mb-3 sm:mb-5 flex justify-between items-center">
+      <header className="h-[90px] max-w-[1300px] w-full mx-auto px-[5%] text-[14px] font-bold mt-7 sm:mt-10 mb-3 sm:mb-5 flex justify-around items-center">
         <div
           onClick={() => setHamburger(!hamburger)}
           className="z-10 w-15 h-15 rounded-2xl bg-black cursor-pointer  flex flex-col justify-center items-center relative"
@@ -55,14 +79,22 @@ const Header = ({ data }: Props) => {
             一覧に戻る
           </Link>
         </div>
-        <div>
-          <Link href={"/login"} className="blcok">
-            ログイン
-          </Link>
-          <Link href={"/signup"} className="blcok ml-3">
-            アカウント作成
-          </Link>
-        </div>
+        {currentUser ? (
+          <div>
+            <button className="cursor-pointer" onClick={logout}>
+              ログアウト
+            </button>
+          </div>
+        ) : (
+          <div>
+            <Link href={"/login"} className="blcok">
+              ログイン
+            </Link>
+            <Link href={"/signup"} className="blcok ml-3">
+              アカウント作成
+            </Link>
+          </div>
+        )}
       </header>
       <AnimatePresence>
         {hamburger && <SideModal unique={unique} />}

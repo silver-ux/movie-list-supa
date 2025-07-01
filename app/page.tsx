@@ -3,7 +3,6 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { getUser } from "@/supabase/user";
 import Header from "./components/Header";
 
 type MovieData = {
@@ -17,7 +16,7 @@ type MovieData = {
 };
 
 const Page = () => {
-  const [data, setData] = useState<MovieData[]>([]);
+  const [data, setData] = useState<MovieData[] | null>([]);
   const [loading, setLoading] = useState(true);
   const [modalItem, setModalItem] = useState<MovieData | null>(null);
   const [query, setQuery] = useState("");
@@ -30,12 +29,6 @@ const Page = () => {
     const fetchData = async () => {
       const response = await fetch("/api/movies");
       const json = (await response.json()) as MovieData[];
-
-      const user = await getUser();
-
-      if ("error" in user) {
-        console.error("認証エラー:", user.error);
-      }
 
       setData(json);
       setLoading(false);
@@ -53,13 +46,13 @@ const Page = () => {
 
   const stars = ["★", "★★", "★★★", "★★★★", "★★★★★"];
 
-  const filtered = data.filter((post) =>
+  const filtered = data?.filter((post) =>
     post.title.toLowerCase().includes(query.toLowerCase())
   );
 
   return (
     <>
-      <Header data={data} />
+      <Header data={data} setData={setData} />
       <input
         type="text"
         className="border block mx-auto py-2 px-3 mb-4 w-[90%] md:w-1/2 "
@@ -69,7 +62,7 @@ const Page = () => {
       />
 
       <div className="max-w-[1300px] w-full mx-auto px-[5%] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[1fr]">
-        {filtered.map((item, index) => (
+        {filtered?.map((item, index) => (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
