@@ -87,6 +87,16 @@ const Page = () => {
     fetchUser();
   }, []);
 
+  if (!userData) {
+    setTimeout(() => {
+      router.push("/");
+    }, 3000);
+    return (
+      <div className="grid h-screen w-screen place-content-center">
+        <p className="font-bold text-4xl">ログインしてください</p>
+      </div>
+    );
+  }
   return (
     <motion.div
       key="new-page"
