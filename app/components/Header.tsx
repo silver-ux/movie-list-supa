@@ -55,10 +55,10 @@ const Header = ({ data, setData, setGenreSelected }: Props) => {
 
   return (
     <>
-      <header className="h-[90px] max-w-[1300px] w-full mx-auto px-[5%] text-[14px] font-bold mt-7 sm:mt-10 mb-3 sm:mb-5 flex justify-around items-center">
+      <header className="h-[90px] max-w-[1300px] w-full mx-auto px-[5%] text-[14px] font-bold mt-7 sm:mt-10 mb-3 sm:mb-5 flex justify-between items-center relative">
         <div
           onClick={() => setHamburger(!hamburger)}
-          className="z-10 w-15 h-15 rounded-2xl bg-black cursor-pointer  flex flex-col justify-center items-center relative"
+          className="z-10 w-15 h-15 rounded-2xl bg-black cursor-pointer flex flex-col justify-center items-center relative"
         >
           {hamburger ? (
             <>
