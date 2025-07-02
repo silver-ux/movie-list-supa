@@ -18,9 +18,14 @@ export const storageUpload = async (image: File | null): Promise<string> => {
     console.log("アップロード成功:", storageData);
   }
 
-  const { data: urlData } = supabase.storage
+  const { data: signedUrlData, error: signedUrlErr } = await supabase.storage
     .from("movies-images")
-    .getPublicUrl(filePath);
+    .createSignedUrl(filePath, 60 * 60);
 
-  return urlData.publicUrl;
+  if (signedUrlErr) {
+    console.error("Signed URL取得失敗:", signedUrlErr.message);
+    throw new Error("画像URL取得失敗");
+  }
+
+  return signedUrlData.signedUrl;
 };

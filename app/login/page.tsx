@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { validationSchema } from "../utils/validationSchema";
 import { motion } from "motion/react";
@@ -14,6 +14,8 @@ interface IFormInput {
 
 const LoginPage = () => {
   const router = useRouter();
+
+  const [loginError, setLoginError] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -32,10 +34,14 @@ const LoginPage = () => {
       body: JSON.stringify(data),
     });
 
-    if (!res.ok) alert("投稿失敗");
     const response = await res.json();
-    alert(response.message);
 
+    if (!res.ok) {
+      setLoginError(response.message || "ログインに失敗しました");
+      return;
+    }
+
+    setLoginError(null);
     router.push("/");
   };
   return (
@@ -43,9 +49,15 @@ const LoginPage = () => {
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 1 }}
+      onClick={() => {
+        router.push("/");
+      }}
       className=" h-screen w-screen px-[5%] flex items-center justify-center "
     >
-      <div className="bg-gray-100 rounded-2xl w-full max-w-[700px] h-[600px] ">
+      <div
+        className="bg-gray-100 rounded-2xl w-full max-w-[700px] h-[600px] "
+        onClick={(e) => e.stopPropagation()}
+      >
         <form
           onSubmit={handleSubmit(onSubmit)}
           action="#"
@@ -73,6 +85,9 @@ const LoginPage = () => {
           <p className=" text-red-600">
             {errors.password?.message as React.ReactNode}
           </p>
+          {loginError && (
+            <p className="text-red-600 text-center mt-4">{loginError}</p>
+          )}
           <button
             type="submit"
             className="block w-[30%] mx-auto text-center mt-10 cursor-pointer py-5 bg-sky-200 rounded-2xl duration-500  hover:bg-sky-300 active:bg-sky-800"

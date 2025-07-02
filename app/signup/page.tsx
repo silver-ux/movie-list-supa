@@ -45,9 +45,15 @@ const SignUpPage = () => {
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 1 }}
+      onClick={() => {
+        router.push("/");
+      }}
       className=" h-screen w-screen px-[5%] flex items-center justify-center "
     >
-      <div className="bg-gray-100 rounded-2xl w-full max-w-[700px] h-[600px] ">
+      <div
+        className="bg-gray-100 rounded-2xl w-full max-w-[700px] h-[600px] "
+        onClick={(e) => e.stopPropagation()}
+      >
         <form
           onSubmit={handleSubmit(onSubmit)}
           action="#"
@@ -92,7 +98,7 @@ const SignUpPage = () => {
             type="submit"
             className="block w-[30%] mx-auto text-center mt-10 cursor-pointer py-5 bg-sky-200 rounded-2xl duration-500  hover:bg-sky-300 active:bg-sky-800"
           >
-            ログイン
+            アカウント作成
           </button>
         </form>
       </div>

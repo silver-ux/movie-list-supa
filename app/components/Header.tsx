@@ -21,9 +21,10 @@ type MovieData = {
 type Props = {
   data: MovieData[] | null;
   setData: React.Dispatch<React.SetStateAction<MovieData[] | null>>;
+  setGenreSelected: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const Header = ({ data, setData }: Props) => {
+const Header = ({ data, setData, setGenreSelected }: Props) => {
   const [hamburger, setHamburger] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   useScrollLock(hamburger);
@@ -42,7 +43,7 @@ const Header = ({ data, setData }: Props) => {
       }
     };
     func();
-  }, [currentUser]);
+  }, []);
 
   const logout = async () => {
     await signout();
@@ -51,6 +52,7 @@ const Header = ({ data, setData }: Props) => {
     const json = (await response.json()) as MovieData[];
     setData(json);
   };
+
   return (
     <>
       <header className="h-[90px] max-w-[1300px] w-full mx-auto px-[5%] text-[14px] font-bold mt-7 sm:mt-10 mb-3 sm:mb-5 flex justify-around items-center">
@@ -71,14 +73,16 @@ const Header = ({ data, setData }: Props) => {
             </>
           )}
         </div>
-        <div className="sm:flex items-center h-full justify-center hidden">
-          <Link href={"/new"} className="bg-sky-100 px-5 py-3 mx-4 block">
-            映画を追加
-          </Link>
-          <Link href={"/"} className="bg-red-100 px-5 py-3 mx-4 block">
-            一覧に戻る
-          </Link>
-        </div>
+        {currentUser && (
+          <div className="sm:flex items-center h-full justify-center hidden">
+            <Link href={"/new"} className="bg-sky-100 px-5 py-3 mx-4 block">
+              映画を追加
+            </Link>
+            <Link href={"/"} className="bg-red-100 px-5 py-3 mx-4 block">
+              一覧に戻る
+            </Link>
+          </div>
+        )}
         {currentUser ? (
           <div>
             <button className="cursor-pointer" onClick={logout}>
@@ -97,7 +101,13 @@ const Header = ({ data, setData }: Props) => {
         )}
       </header>
       <AnimatePresence>
-        {hamburger && <SideModal unique={unique} />}
+        {hamburger && (
+          <SideModal
+            unique={unique}
+            setGenreSelected={setGenreSelected}
+            setHamburger={setHamburger}
+          />
+        )}
       </AnimatePresence>
     </>
   );

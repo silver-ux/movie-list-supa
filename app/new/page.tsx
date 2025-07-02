@@ -1,12 +1,14 @@
 "use client";
 import { storageUpload } from "@/supabase/storageUpload";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { validationNew } from "../utils/validationSchema";
+import { getUser } from "@/supabase/user";
+import { User } from "@supabase/supabase-js";
 
 const Page = () => {
   type IFormInput = {
@@ -27,6 +29,7 @@ const Page = () => {
 
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  const [userData, setUserData] = useState<User | null>(null);
 
   const router = useRouter();
 
@@ -57,7 +60,12 @@ const Page = () => {
     const res = await fetch("/api/movies", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...data, image_url: url }),
+      body: JSON.stringify({
+        ...data,
+        image_url: url,
+        id: userData?.id,
+        name: userData?.user_metadata.username,
+      }),
     });
 
     setLoading(false);
@@ -69,6 +77,16 @@ const Page = () => {
     setImage(null);
     router.push("/");
   };
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { user, error: Err } = await getUser();
+      if (!user) return console.error(Err);
+      setUserData(user);
+    };
+    fetchUser();
+  }, []);
+
   return (
     <motion.div
       key="new-page"

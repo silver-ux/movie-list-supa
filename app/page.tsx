@@ -20,6 +20,7 @@ const Page = () => {
   const [loading, setLoading] = useState(true);
   const [modalItem, setModalItem] = useState<MovieData | null>(null);
   const [query, setQuery] = useState("");
+  const [genreSelected, setGenreSelected] = useState<string>("");
 
   const toggleModal = (item: MovieData) => {
     setModalItem((prev) => (prev?.id === item.id ? null : item));
@@ -46,13 +47,19 @@ const Page = () => {
 
   const stars = ["★", "★★", "★★★", "★★★★", "★★★★★"];
 
-  const filtered = data?.filter((post) =>
-    post.title.toLowerCase().includes(query.toLowerCase())
-  );
+  const filtered = data
+    ?.filter((post) => post.title.toLowerCase().includes(query.toLowerCase()))
+    .filter((post) =>
+      genreSelected ? post.genre.includes(genreSelected) : true
+    );
 
   return (
     <>
-      <Header data={data} setData={setData} />
+      <Header
+        data={data}
+        setData={setData}
+        setGenreSelected={setGenreSelected}
+      />
       <input
         type="text"
         className="border block mx-auto py-2 px-3 mb-4 w-[90%] md:w-1/2 "

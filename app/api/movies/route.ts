@@ -4,8 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   const supabase = await supaClient();
-  const { user, error: Err } = await getUser();
-  if (!user) return console.error(Err);
 
   const body = await req.json();
   console.log(body);
@@ -19,7 +17,8 @@ export async function POST(req: NextRequest) {
       stars: body.stars,
       image_url: body.image_url,
       genre: body.genre,
-      user_id: user.id,
+      user_id: body.id,
+      name: body.name,
     })
     .select()
     .single();

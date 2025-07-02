@@ -4,27 +4,45 @@ import React from "react";
 
 type Props = {
   unique: string[];
+  setGenreSelected: React.Dispatch<React.SetStateAction<string>>;
+  setHamburger: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const SideModal = ({ unique }: Props) => {
+const SideModal = ({ unique, setGenreSelected, setHamburger }: Props) => {
   return (
     <motion.div
-      initial={{ opacity: 0, x: -50 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -50 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
       transition={{ duration: 0.4 }}
-      className="sm:w-[30%] w-[50%] h-screen bg-gray-100 absolute top-0 z-5"
+      className="bg-black/50 w-screen h-screen fixed inset-0"
+      onClick={() => setHamburger(false)}
     >
-      <ul className=" flex flex-col items-center mt-[150px] h-full">
-        {unique.map((item, index) => (
+      <motion.div
+        initial={{ opacity: 0, x: -50 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -50 }}
+        transition={{ duration: 0.4 }}
+        className="sm:w-[30%] w-[50%] h-screen bg-gray-100 absolute top-0 z-5"
+      >
+        <ul className=" flex flex-col items-center mt-[150px] h-full">
           <li
-            key={index}
+            onClick={() => setGenreSelected("")}
             className="border-b text-left w-[60%] my-2 cursor-pointer hover:bg-gray-200 py-3 "
           >
-            {item}
+            All
           </li>
-        ))}
-      </ul>
+          {unique.map((item, index) => (
+            <li
+              key={index}
+              onClick={() => setGenreSelected(item)}
+              className="border-b text-left w-[60%] my-2 cursor-pointer hover:bg-gray-200 py-3 "
+            >
+              {item}
+            </li>
+          ))}
+        </ul>
+      </motion.div>
     </motion.div>
   );
 };
