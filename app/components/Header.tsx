@@ -16,15 +16,17 @@ type MovieData = {
   title: string;
   name: string;
   genre: string[];
+  user_id: string;
 };
 
 type Props = {
   data: MovieData[] | null;
-  setData: React.Dispatch<React.SetStateAction<MovieData[] | null>>;
+  setData: React.Dispatch<React.SetStateAction<MovieData[]>>;
   setGenreSelected: React.Dispatch<React.SetStateAction<string>>;
+  setShowMyList: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const Header = ({ data, setData, setGenreSelected }: Props) => {
+const Header = ({ data, setData, setGenreSelected, setShowMyList }: Props) => {
   const [hamburger, setHamburger] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   useScrollLock(hamburger);
@@ -106,6 +108,7 @@ const Header = ({ data, setData, setGenreSelected }: Props) => {
             unique={unique}
             setGenreSelected={setGenreSelected}
             setHamburger={setHamburger}
+            setShowMyList={setShowMyList}
           />
         )}
       </AnimatePresence>

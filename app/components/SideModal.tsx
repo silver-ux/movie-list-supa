@@ -6,9 +6,15 @@ type Props = {
   unique: string[];
   setGenreSelected: React.Dispatch<React.SetStateAction<string>>;
   setHamburger: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowMyList: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const SideModal = ({ unique, setGenreSelected, setHamburger }: Props) => {
+const SideModal = ({
+  unique,
+  setGenreSelected,
+  setHamburger,
+  setShowMyList,
+}: Props) => {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -27,15 +33,29 @@ const SideModal = ({ unique, setGenreSelected, setHamburger }: Props) => {
       >
         <ul className=" flex flex-col items-center mt-[150px] h-full">
           <li
-            onClick={() => setGenreSelected("")}
+            onClick={() => setShowMyList(true)}
+            className="border-b text-left w-[60%] my-2 cursor-pointer
+            hover:bg-gray-200 py-3"
+          >
+            マイリスト
+          </li>
+          <li
+            onClick={() => {
+              setShowMyList(false);
+              setGenreSelected("");
+            }}
             className="border-b text-left w-[60%] my-2 cursor-pointer hover:bg-gray-200 py-3 "
           >
             All
           </li>
+
           {unique.map((item, index) => (
             <li
               key={index}
-              onClick={() => setGenreSelected(item)}
+              onClick={() => {
+                setShowMyList(false);
+                setGenreSelected(item);
+              }}
               className="border-b text-left w-[60%] my-2 cursor-pointer hover:bg-gray-200 py-3 "
             >
               {item}

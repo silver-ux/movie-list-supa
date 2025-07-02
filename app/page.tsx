@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Header from "./components/Header";
+import { getUser } from "@/supabase/user";
 
 type MovieData = {
   created_at: string;
@@ -13,14 +14,17 @@ type MovieData = {
   title: string;
   name: string;
   genre: string[];
+  user_id: string;
 };
 
 const Page = () => {
-  const [data, setData] = useState<MovieData[] | null>([]);
+  const [data, setData] = useState<MovieData[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalItem, setModalItem] = useState<MovieData | null>(null);
   const [query, setQuery] = useState("");
   const [genreSelected, setGenreSelected] = useState<string>("");
+  const [userData, setUserData] = useState<string>("");
+  const [showMyList, setShowMyList] = useState(false);
 
   const toggleModal = (item: MovieData) => {
     setModalItem((prev) => (prev?.id === item.id ? null : item));
@@ -30,6 +34,13 @@ const Page = () => {
     const fetchData = async () => {
       const response = await fetch("/api/movies");
       const json = (await response.json()) as MovieData[];
+
+      const { user, error } = await getUser();
+      if (user) {
+        setUserData(user.id);
+      } else {
+        console.error(error);
+      }
 
       setData(json);
       setLoading(false);
@@ -49,6 +60,7 @@ const Page = () => {
 
   const filtered = data
     ?.filter((post) => post.title.toLowerCase().includes(query.toLowerCase()))
+    .filter((post) => (showMyList ? post.user_id === userData : true))
     .filter((post) =>
       genreSelected ? post.genre.includes(genreSelected) : true
     );
@@ -59,6 +71,7 @@ const Page = () => {
         data={data}
         setData={setData}
         setGenreSelected={setGenreSelected}
+        setShowMyList={setShowMyList}
       />
       <input
         type="text"
@@ -119,7 +132,7 @@ const Page = () => {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="bg-white p-6 rounded shadow-lg min-w-[60%] md:min-w-[685px] max-w-[90%] md:max-w-[ max-h-[90%] overflow-auto"
+                className="bg-white p-6 rounded shadow-lg min-w-[60%] md:min-w-[685px] max-w-[90%] md:max-w-[max-h-[90%] overflow-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="bg-black rounded">
