@@ -1,58 +1,39 @@
 "use client";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import SideModal from "./SideModal";
 import { AnimatePresence } from "motion/react";
 import { useScrollLock } from "./ScrollLock";
-import { getUser } from "@/supabase/user";
 import { User } from "@supabase/supabase-js";
 import { signout } from "@/supabase/signout";
-
-type MovieData = {
-  created_at: string;
-  id: number;
-  image_url: string;
-  stars: number;
-  title: string;
-  name: string;
-  genre: string[];
-  user_id: string;
-};
+import { MyContext } from "../context/Context";
 
 type Props = {
-  data: MovieData[] | null;
-  setData: React.Dispatch<React.SetStateAction<MovieData[]>>;
   setGenreSelected: React.Dispatch<React.SetStateAction<string>>;
   setShowMyList: React.Dispatch<React.SetStateAction<boolean>>;
+  currentUser: User | null;
+  setCurrentUser: React.Dispatch<React.SetStateAction<User | null>>;
 };
 
-const Header = ({ data, setData, setGenreSelected, setShowMyList }: Props) => {
+const Header = ({
+  setGenreSelected,
+  setShowMyList,
+  currentUser,
+  setCurrentUser,
+}: Props) => {
   const [hamburger, setHamburger] = useState(false);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
   useScrollLock(hamburger);
 
-  const genres = data?.map((item) => item.genre);
+  const { movieData } = useContext(MyContext);
+
+  const genres = movieData?.map((item) => item.genre);
   const flat = genres?.flat();
   const unique = [...new Set(flat)];
 
-  useEffect(() => {
-    const func = async () => {
-      const { user, error } = await getUser();
-      if (user) {
-        setCurrentUser(user);
-      } else {
-        console.error(error);
-      }
-    };
-    func();
-  }, []);
-
   const logout = async () => {
     await signout();
+
     setCurrentUser(null);
-    const response = await fetch("/api/movies");
-    const json = (await response.json()) as MovieData[];
-    setData(json);
   };
 
   return (

@@ -2,29 +2,19 @@
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Header from "./components/Header";
-import { getUser } from "@/supabase/user";
-
-type MovieData = {
-  created_at: string;
-  id: number;
-  image_url: string;
-  stars: number;
-  title: string;
-  name: string;
-  genre: string[];
-  user_id: string;
-};
+import { MovieData, MyContext } from "./context/Context";
 
 const Page = () => {
-  const [data, setData] = useState<MovieData[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalItem, setModalItem] = useState<MovieData | null>(null);
   const [query, setQuery] = useState("");
   const [genreSelected, setGenreSelected] = useState<string>("");
-  const [userData, setUserData] = useState<string>("");
   const [showMyList, setShowMyList] = useState(false);
+
+  const { currentUser, setCurrentUser, movieData, setMovieData } =
+    useContext(MyContext);
 
   const toggleModal = (item: MovieData) => {
     setModalItem((prev) => (prev?.id === item.id ? null : item));
@@ -35,14 +25,7 @@ const Page = () => {
       const response = await fetch("/api/movies");
       const json = (await response.json()) as MovieData[];
 
-      const { user, error } = await getUser();
-      if (user) {
-        setUserData(user.id);
-      } else {
-        console.error(error);
-      }
-
-      setData(json);
+      setMovieData(json);
       setLoading(false);
     };
     fetchData();
@@ -58,9 +41,11 @@ const Page = () => {
 
   const stars = ["★", "★★", "★★★", "★★★★", "★★★★★"];
 
-  const filtered = data
+  const filtered = movieData
     ?.filter((post) => post.title.toLowerCase().includes(query.toLowerCase()))
-    .filter((post) => (showMyList ? post.user_id === userData : true))
+    .filter((post) =>
+      showMyList && currentUser ? post.user_id === currentUser?.id : true
+    )
     .filter((post) =>
       genreSelected ? post.genre.includes(genreSelected) : true
     );
@@ -68,10 +53,10 @@ const Page = () => {
   return (
     <>
       <Header
-        data={data}
-        setData={setData}
         setGenreSelected={setGenreSelected}
         setShowMyList={setShowMyList}
+        currentUser={currentUser}
+        setCurrentUser={setCurrentUser}
       />
       <input
         type="text"

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import ClientWrapper from "./components/ClientWrapper";
+import Context from "./context/Context";
 // import ClientWrapper from "./components/ClientWrapper";
 
 const noto = Noto_Sans_JP({
@@ -22,7 +23,9 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={noto.className}>
-        <ClientWrapper>{children}</ClientWrapper>
+        <ClientWrapper>
+          <Context>{children}</Context>
+        </ClientWrapper>
       </body>
     </html>
   );
