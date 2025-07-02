@@ -1,11 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { validationSchema } from "../utils/validationSchema";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
+import { getUser } from "@/supabase/user";
 
 interface IFormInput {
   email: string;
@@ -44,6 +45,16 @@ const LoginPage = () => {
     setLoginError(null);
     router.push("/");
   };
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { user } = await getUser();
+      if (user) {
+        router.push("/");
+      }
+    };
+    fetchUser();
+  }, [router]);
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}

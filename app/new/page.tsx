@@ -30,6 +30,7 @@ const Page = () => {
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState<User | null>(null);
+  const [loadingUser, setLoadingUser] = useState(true);
 
   const router = useRouter();
 
@@ -81,22 +82,30 @@ const Page = () => {
   useEffect(() => {
     const fetchUser = async () => {
       const { user, error: Err } = await getUser();
-      if (!user) return console.error(Err);
-      setUserData(user);
+
+      if (!user) {
+        console.error(Err);
+        setUserData(null);
+
+        setTimeout(() => {
+          router.push("/");
+        }, 1000);
+      } else {
+        setUserData(user);
+        setLoadingUser(false);
+      }
     };
     fetchUser();
-  }, []);
+  }, [router]);
 
-  if (!userData) {
-    setTimeout(() => {
-      router.push("/");
-    }, 3000);
+  if (loadingUser) {
     return (
-      <div className="grid h-screen w-screen place-content-center">
-        <p className="font-bold text-4xl">ログインしてください</p>
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
       </div>
     );
   }
+
   return (
     <motion.div
       key="new-page"
