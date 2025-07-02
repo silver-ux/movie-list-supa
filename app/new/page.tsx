@@ -131,7 +131,7 @@ const Page = () => {
 
         <textarea
           className="border p-2 w-full rounded min-h-[120px] mb-0"
-          placeholder="本文）"
+          placeholder="本文"
           {...register("desc")}
         />
         <p className=" text-red-600">
