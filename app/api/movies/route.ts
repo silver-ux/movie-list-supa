@@ -5,7 +5,6 @@ export async function POST(req: NextRequest) {
   const supabase = await supaClient();
 
   const body = await req.json();
-  console.log(body);
 
   const { data, error } = await supabase
     .from("movies")
