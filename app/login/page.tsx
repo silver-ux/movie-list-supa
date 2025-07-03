@@ -1,12 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { validationSchema } from "../utils/validationSchema";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
-import { getUser } from "@/supabase/user";
+import { MyContext } from "../context/Context";
 
 interface IFormInput {
   email: string;
@@ -17,6 +17,8 @@ const LoginPage = () => {
   const router = useRouter();
 
   const [loginError, setLoginError] = useState<string | null>(null);
+
+  const { currentUser, setCurrentUser } = useContext(MyContext);
   const {
     register,
     handleSubmit,
@@ -36,6 +38,7 @@ const LoginPage = () => {
     });
 
     const response = await res.json();
+    setCurrentUser(response.user);
 
     if (!res.ok) {
       setLoginError(response.message || "ログインに失敗しました");
@@ -48,13 +51,12 @@ const LoginPage = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { user } = await getUser();
-      if (user) {
+      if (currentUser) {
         router.push("/");
       }
     };
     fetchUser();
-  }, [router]);
+  }, []);
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}

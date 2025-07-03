@@ -8,6 +8,10 @@ type MyContextType = {
   setCurrentUser: React.Dispatch<React.SetStateAction<User | null>>;
   movieData: MovieData[];
   setMovieData: React.Dispatch<React.SetStateAction<MovieData[]>>;
+  genreSelected: string;
+  setGenreSelected: React.Dispatch<React.SetStateAction<string>>;
+  showMyList: boolean;
+  setShowMyList: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export type MovieData = {
@@ -27,6 +31,10 @@ const defaultContextValue: MyContextType = {
   setCurrentUser: () => {}, // 空関数（初期値なので実際には使わない）
   movieData: [],
   setMovieData: () => {},
+  genreSelected: "",
+  setGenreSelected: () => {},
+  showMyList: false,
+  setShowMyList: () => {},
 };
 
 export const MyContext = createContext<MyContextType>(defaultContextValue);
@@ -38,6 +46,8 @@ const Context = ({
 }>) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [movieData, setMovieData] = useState<MovieData[]>([]);
+  const [genreSelected, setGenreSelected] = useState<string>("");
+  const [showMyList, setShowMyList] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -53,7 +63,16 @@ const Context = ({
 
   return (
     <MyContext.Provider
-      value={{ currentUser, setCurrentUser, movieData, setMovieData }}
+      value={{
+        currentUser,
+        setCurrentUser,
+        movieData,
+        setMovieData,
+        genreSelected,
+        setGenreSelected,
+        showMyList,
+        setShowMyList,
+      }}
     >
       {children}
     </MyContext.Provider>

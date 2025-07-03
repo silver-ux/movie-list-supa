@@ -4,27 +4,14 @@ import React, { useContext, useState } from "react";
 import SideModal from "./SideModal";
 import { AnimatePresence } from "motion/react";
 import { useScrollLock } from "./ScrollLock";
-import { User } from "@supabase/supabase-js";
 import { signout } from "@/supabase/signout";
 import { MyContext } from "../context/Context";
 
-type Props = {
-  setGenreSelected: React.Dispatch<React.SetStateAction<string>>;
-  setShowMyList: React.Dispatch<React.SetStateAction<boolean>>;
-  currentUser: User | null;
-  setCurrentUser: React.Dispatch<React.SetStateAction<User | null>>;
-};
-
-const Header = ({
-  setGenreSelected,
-  setShowMyList,
-  currentUser,
-  setCurrentUser,
-}: Props) => {
+const Header = () => {
   const [hamburger, setHamburger] = useState(false);
   useScrollLock(hamburger);
 
-  const { movieData } = useContext(MyContext);
+  const { movieData, currentUser, setCurrentUser } = useContext(MyContext);
 
   const genres = movieData?.map((item) => item.genre);
   const flat = genres?.flat();
@@ -84,14 +71,7 @@ const Header = ({
         )}
       </header>
       <AnimatePresence>
-        {hamburger && (
-          <SideModal
-            unique={unique}
-            setGenreSelected={setGenreSelected}
-            setHamburger={setHamburger}
-            setShowMyList={setShowMyList}
-          />
-        )}
+        {hamburger && <SideModal unique={unique} setHamburger={setHamburger} />}
       </AnimatePresence>
     </>
   );

@@ -10,10 +10,8 @@ const Page = () => {
   const [loading, setLoading] = useState(true);
   const [modalItem, setModalItem] = useState<MovieData | null>(null);
   const [query, setQuery] = useState("");
-  const [genreSelected, setGenreSelected] = useState<string>("");
-  const [showMyList, setShowMyList] = useState(false);
 
-  const { currentUser, setCurrentUser, movieData, setMovieData } =
+  const { currentUser, movieData, setMovieData, showMyList, genreSelected } =
     useContext(MyContext);
 
   const toggleModal = (item: MovieData) => {
@@ -52,12 +50,7 @@ const Page = () => {
 
   return (
     <>
-      <Header
-        setGenreSelected={setGenreSelected}
-        setShowMyList={setShowMyList}
-        currentUser={currentUser}
-        setCurrentUser={setCurrentUser}
-      />
+      <Header />
       <input
         type="text"
         className="border block mx-auto py-2 px-3 mb-4 w-[90%] md:w-1/2 "

@@ -1,20 +1,16 @@
 "use client";
 import { motion } from "motion/react";
-import React from "react";
+import React, { useContext } from "react";
+import { MyContext } from "../context/Context";
 
 type Props = {
   unique: string[];
-  setGenreSelected: React.Dispatch<React.SetStateAction<string>>;
   setHamburger: React.Dispatch<React.SetStateAction<boolean>>;
-  setShowMyList: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const SideModal = ({
-  unique,
-  setGenreSelected,
-  setHamburger,
-  setShowMyList,
-}: Props) => {
+const SideModal = ({ unique, setHamburger }: Props) => {
+  const { setShowMyList, setGenreSelected, currentUser } =
+    useContext(MyContext);
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -32,13 +28,15 @@ const SideModal = ({
         className="sm:w-[30%] w-[50%] h-screen bg-gray-100 absolute top-0 z-5"
       >
         <ul className=" flex flex-col items-center mt-[150px] h-full">
-          <li
-            onClick={() => setShowMyList(true)}
-            className="border-b text-left w-[60%] my-2 cursor-pointer
+          {currentUser && (
+            <li
+              onClick={() => setShowMyList(true)}
+              className="border-b text-left w-[60%] my-2 cursor-pointer
             hover:bg-gray-200 py-3"
-          >
-            マイリスト
-          </li>
+            >
+              マイリスト
+            </li>
+          )}
           <li
             onClick={() => {
               setShowMyList(false);
