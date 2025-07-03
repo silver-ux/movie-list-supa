@@ -17,7 +17,7 @@ const SideModal = ({ unique, setHamburger }: Props) => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.4 }}
-      className="bg-black/50 w-screen h-screen fixed inset-0"
+      className="bg-black/50 w-screen h-screen fixed inset-0 z-5"
       onClick={() => setHamburger(false)}
     >
       <motion.div
