@@ -1,14 +1,13 @@
 "use client";
 import { storageUpload } from "@/supabase/storageUpload";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { validationNew } from "../utils/validationSchema";
-import { getUser } from "@/supabase/user";
-import { User } from "@supabase/supabase-js";
+import { MyContext } from "../context/Context";
 
 const Page = () => {
   type IFormInput = {
@@ -29,10 +28,11 @@ const Page = () => {
 
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
-  const [userData, setUserData] = useState<User | null>(null);
   const [loadingUser, setLoadingUser] = useState(true);
 
   const router = useRouter();
+
+  const { currentUser, setCurrentUser } = useContext(MyContext);
 
   const genres = [
     "アクション",
@@ -64,8 +64,8 @@ const Page = () => {
       body: JSON.stringify({
         ...data,
         image_url: url,
-        id: userData?.id,
-        name: userData?.user_metadata.username,
+        id: currentUser?.id,
+        name: currentUser?.user_metadata.username,
       }),
     });
 
@@ -81,22 +81,19 @@ const Page = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { user, error: Err } = await getUser();
-
-      if (!user) {
-        console.error(Err);
-        setUserData(null);
+      if (!currentUser) {
+        console.error("ユーザー情報が入っていません");
+        setCurrentUser(null);
 
         setTimeout(() => {
           router.push("/");
         }, 1000);
       } else {
-        setUserData(user);
         setLoadingUser(false);
       }
     };
     fetchUser();
-  }, [router]);
+  }, []);
 
   if (loadingUser) {
     return (
