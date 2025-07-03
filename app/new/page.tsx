@@ -27,12 +27,11 @@ const Page = () => {
   });
 
   const [image, setImage] = useState<File | null>(null);
-  const [loading, setLoading] = useState(false);
   const [loadingUser, setLoadingUser] = useState(true);
 
   const router = useRouter();
 
-  const { currentUser, setCurrentUser } = useContext(MyContext);
+  const { currentUser, setCurrentUser, setMovieData } = useContext(MyContext);
 
   const genres = [
     "アクション",
@@ -54,8 +53,6 @@ const Page = () => {
   ];
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    setLoading(true);
-
     const url = await storageUpload(image);
 
     const res = await fetch("/api/movies", {
@@ -69,11 +66,12 @@ const Page = () => {
       }),
     });
 
-    setLoading(false);
+    const response = await res.json();
+    console.log(response);
+
+    setMovieData(response);
 
     if (!res.ok) alert("投稿失敗");
-
-    console.log(res.body);
 
     setImage(null);
     router.push("/");
@@ -167,6 +165,15 @@ const Page = () => {
           className="rounded border-dashed border-1 bg-gray-200 py-2 px-4 cursor-pointer shadow-md"
           onChange={(e) => {
             const file = e.target.files?.[0] ?? null;
+            if (file) {
+              const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
+              if (file.size > MAX_FILE_SIZE) {
+                alert("ファイルサイズは1MB以下にしてください。");
+                e.target.value = "";
+                setImage(null);
+                return;
+              }
+            }
             setImage(file);
           }}
           accept="image/*"
@@ -188,11 +195,8 @@ const Page = () => {
         <p className=" text-red-600">
           {errors.stars?.message as React.ReactNode}
         </p>
-        <button
-          disabled={loading}
-          className="px-4 py-2 bg-blue-600 text-white rounded cursor-pointer block"
-        >
-          {loading ? "送信中…" : "投稿"}
+        <button className="px-4 py-2 bg-blue-600 text-white rounded cursor-pointer block">
+          投稿
         </button>
       </form>
     </motion.div>
