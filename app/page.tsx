@@ -1,10 +1,10 @@
 "use client";
 import { AnimatePresence, motion } from "motion/react";
-import Image from "next/image";
-import Link from "next/link";
 import React, { useContext, useEffect, useState } from "react";
 import Header from "./components/Header";
 import { MovieData, MyContext } from "./context/Context";
+import Card from "./components/Card";
+import Modal from "./components/Modal";
 
 const Page = () => {
   const [loading, setLoading] = useState(true);
@@ -73,24 +73,7 @@ const Page = () => {
             onClick={() => toggleModal(item)}
             className="bg-gray-100 p-5 origin-center rounded hover:bg-gray-200 duration-500 cursor-pointer"
           >
-            <h1 className="font-bold h-[4em] overflow-hidden text-ellipsis leading-tight">
-              {item.title}
-            </h1>
-            <Image
-              src={item.image_url}
-              width={1920}
-              height={1080}
-              alt="picture"
-              priority
-              className="object-cover rounded mb-2 md:mb-4 w-full h-[140px] md:h-[160px]"
-            />
-            <p>
-              <small>{item.genre?.join(" / ")}</small>
-            </p>
-            <p>
-              <small>投稿日：{item.created_at.slice(0, 10)}</small>
-            </p>
-            <p className=" text-2xl">{stars[item.stars - 1]}</p>
+            <Card item={item} stars={stars} />
           </motion.div>
         ))}
 
@@ -105,41 +88,7 @@ const Page = () => {
               className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50"
               onClick={() => setModalItem(null)} // 外クリックで閉じる
             >
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="bg-white p-6 rounded shadow-lg min-w-[60%] md:min-w-[685px] max-w-[90%] md:max-w-[max-h-[90%] overflow-auto"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="bg-black rounded">
-                  <Image
-                    src={modalItem.image_url}
-                    width={1920}
-                    height={1080}
-                    alt="picture"
-                    className="object-contain rounded mb-4 w-full h-[270px] "
-                  />
-                </div>
-                <p className="text-xl font-bold">{modalItem.title}</p>
-                <p className="underline underline-offset-2">
-                  {modalItem.genre?.join(" / ")}
-                </p>
-                <p>
-                  <small>投稿者：{modalItem.name}</small>
-                </p>
-                <p>
-                  <small>投稿日：{modalItem.created_at.slice(0, 10)}</small>
-                </p>
-                <p className=" text-2xl">{stars[modalItem.stars - 1]}</p>
-                <Link
-                  href={`/movies/${modalItem.id}`}
-                  className="text-blue-600 underline mt-2 inline-block"
-                >
-                  詳細情報へ
-                </Link>
-              </motion.div>
+              <Modal modalItem={modalItem} stars={stars} />
             </motion.div>
           )}
         </AnimatePresence>

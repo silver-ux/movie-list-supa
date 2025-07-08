@@ -3,7 +3,7 @@ import Link from "next/link";
 import React, { useContext, useState } from "react";
 import SideModal from "./SideModal";
 import { AnimatePresence } from "motion/react";
-import { useScrollLock } from "./ScrollLock";
+import { useScrollLock } from "../hooks/ScrollLock";
 import { signout } from "@/supabase/signout";
 import { MyContext } from "../context/Context";
 
@@ -13,7 +13,11 @@ const Header = () => {
 
   const { movieData, currentUser, setCurrentUser } = useContext(MyContext);
 
-  const genres = movieData?.map((item) => item.genre);
+  if (!Array.isArray(movieData) || movieData.length < 1) {
+    throw new Error("データが存在しません");
+  }
+
+  const genres = movieData.map((item) => item.genre);
   const flat = genres?.flat();
   const unique = [...new Set(flat)];
 

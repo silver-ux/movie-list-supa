@@ -27,39 +27,41 @@ const SideModal = ({ unique, setHamburger }: Props) => {
         transition={{ duration: 0.4 }}
         className="sm:w-[30%] w-[50%] h-screen bg-gray-100 absolute top-0 z-5"
       >
-        <ul className=" flex flex-col items-center mt-[150px] h-full">
-          {currentUser && (
-            <li
-              onClick={() => setShowMyList(true)}
-              className="border-b text-left w-[60%] my-2 cursor-pointer
+        <div className="h-full overflow-y-auto scrollbar-hide">
+          <ul className=" flex flex-col items-center mt-[150px] h-full">
+            {currentUser && (
+              <li
+                onClick={() => setShowMyList(true)}
+                className="border-b text-left w-[60%] my-2 cursor-pointer
             hover:bg-gray-200 py-3"
-            >
-              マイリスト
-            </li>
-          )}
-          <li
-            onClick={() => {
-              setShowMyList(false);
-              setGenreSelected("");
-            }}
-            className="border-b text-left w-[60%] my-2 cursor-pointer hover:bg-gray-200 py-3 "
-          >
-            All
-          </li>
-
-          {unique.map((item, index) => (
+              >
+                マイリスト
+              </li>
+            )}
             <li
-              key={index}
               onClick={() => {
                 setShowMyList(false);
-                setGenreSelected(item);
+                setGenreSelected("");
               }}
               className="border-b text-left w-[60%] my-2 cursor-pointer hover:bg-gray-200 py-3 "
             >
-              {item}
+              All
             </li>
-          ))}
-        </ul>
+
+            {unique.map((item, index) => (
+              <li
+                key={index}
+                onClick={() => {
+                  setShowMyList(false);
+                  setGenreSelected(item);
+                }}
+                className="border-b text-left w-[60%] my-2 cursor-pointer hover:bg-gray-200 py-3 "
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
       </motion.div>
     </motion.div>
   );
